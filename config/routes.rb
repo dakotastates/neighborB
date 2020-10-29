@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      post '/login', to: 'auth#login'
+      resources :users, only: [:create, :show, :update, :destroy]
+      resources :board_messages, only: [:index, :create, :destroy]
+
+      post '/login', to: 'auth#create'
       get '/profile', to: 'users#profile'
-      post '/users', to: 'users#create'
-      get '/users', to: 'users#index'
-      patch '/users/:id', to: 'users#update'
-      get '/users/:id', to: 'users#show'
 
     end
   end

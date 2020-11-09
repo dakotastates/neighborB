@@ -1,12 +1,26 @@
 class Api::V1::MessagesController < ApplicationController
   skip_before_action :authorized, only: [:index, :create]
-  before_action :find_user, only:[:destroy]
+  before_action :find_message, only:[:destroy]
+  before_action :find_user, only:[:index]
 
 
   def index
-    @messages = Message.all
+    # @messages = Message.all
     # byebug
-    render json: @messages
+    # render json: @messages
+
+    if params[:user_id]
+      if User.find_by(id: params[:user_id])
+        @messages = User.find_by(id: params[:user_id]).messages
+        render json: @messages
+      else
+        render json: { message: "User not found" }, status: :not_acceptable
+
+      end
+    else
+      @messages = Message.all
+      render json: @messages
+    end
   end
 
   # def show
@@ -46,5 +60,9 @@ end
 
   def find_message
     @message = Message.find_by_id(params[:id])
+  end
+
+  def find_user
+    @user = User.find_by_id(params[:id])
   end
 end
